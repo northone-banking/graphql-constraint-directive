@@ -54,7 +54,7 @@ class ConstraintDirective extends SchemaDirectiveVisitor {
 
     if (field.type instanceof GraphQLNonNull && field.type.ofType === GraphQLString) {
       field.type = new GraphQLNonNull(new ConstraintStringType(fieldName, field.type.ofType, this.args))
-    } else if (field.type.ofType === GraphQLString) {
+    } else if (field.type === GraphQLString) {
       field.type = new ConstraintStringType(fieldName, field.type, this.args)
     } else if (field.type instanceof GraphQLNonNull && isGraphQLID) {
       field.type = new GraphQLNonNull(new ConstraintStringType(fieldName, field.type.ofType, this.args))
