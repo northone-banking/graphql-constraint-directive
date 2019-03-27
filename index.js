@@ -11,11 +11,12 @@ const ConstraintStringType = require('./scalars/string')
 const ConstraintNumberType = require('./scalars/number')
 
 class ConstraintDirective extends SchemaDirectiveVisitor {
-  static getDirectiveDeclaration (directiveName, schema) {
+  static getDirectiveDeclaration(directiveName, schema) {
     return new GraphQLDirective({
       name: directiveName,
       locations: [
-        DirectiveLocation.INPUT_FIELD_DEFINITION
+        DirectiveLocation.INPUT_FIELD_DEFINITION,
+        DirectiveLocation.ARGUMENT_DEFINITION
       ],
       args: {
         /* Strings */
@@ -38,11 +39,15 @@ class ConstraintDirective extends SchemaDirectiveVisitor {
     })
   }
 
-  visitInputFieldDefinition (field) {
+  visitInputFieldDefinition(field) {
     this.wrapType(field)
   }
 
-  wrapType (field) {
+  visitArgumentDefinition(field) {
+    this.wrapType(field)
+  }
+
+  wrapType(field) {
     const fieldName = field.astNode.name.value
 
     if (field.type instanceof GraphQLNonNull && field.type.ofType === GraphQLString) {
