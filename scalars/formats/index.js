@@ -6,7 +6,10 @@ const formats = [
   'ipv4',
   'ipv6',
   'uri',
-  'uuid'
+  'uuid',
+  'uuid-composite',
+  'integer',
+  'uuid-or-int'
 ]
 const fns = {}
 
