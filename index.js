@@ -4,7 +4,8 @@ const {
   GraphQLInt,
   GraphQLFloat,
   GraphQLNonNull,
-  GraphQLString
+  GraphQLString,
+  GraphQLID
 } = require('graphql')
 const { SchemaDirectiveVisitor } = require('graphql-tools')
 const ConstraintStringType = require('./scalars/string')
@@ -49,12 +50,20 @@ class ConstraintDirective extends SchemaDirectiveVisitor {
 
   wrapType(field) {
     const fieldName = field.astNode.name.value
+    const isGraphQLID = field.type.ofType === GraphQLID
 
     if (field.type instanceof GraphQLNonNull && field.type.ofType === GraphQLString) {
       field.type = new GraphQLNonNull(new ConstraintStringType(fieldName, field.type.ofType, this.args))
-    } else if (field.type === GraphQLString) {
+    } else if (field.type.ofType === GraphQLString) {
       field.type = new ConstraintStringType(fieldName, field.type, this.args)
-    } else if (field.type instanceof GraphQLNonNull && (field.type.ofType === GraphQLFloat || field.type.ofType === GraphQLInt)) {
+    } else if (field.type instanceof GraphQLNonNull && isGraphQLID) {
+      field.type = new GraphQLNonNull(new ConstraintStringType(fieldName, field.type.ofType, this.args))
+    } else if (field.type === isGraphQLID) {
+      field.type = new ConstraintStringType(fieldName, field.type.ofType, this.args)
+    } else if (
+      field.type instanceof GraphQLNonNull &&
+      (field.type.ofType === GraphQLFloat || field.type.ofType === GraphQLInt)
+    ) {
       field.type = new GraphQLNonNull(new ConstraintNumberType(fieldName, field.type.ofType, this.args))
     } else if (field.type === GraphQLFloat || field.type === GraphQLInt) {
       field.type = new ConstraintNumberType(fieldName, field.type, this.args)
