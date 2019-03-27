@@ -21,6 +21,7 @@ const { makeExecutableSchema } = require('graphql-tools')
 const typeDefs = `
   type Query {
     books: [Book]
+    book(id: ID! @constraint(format:"uuid"))
   }
   type Book {
     title: String
@@ -83,6 +84,10 @@ Supported formats:
 - ipv6
 - uri
 - uuid
+// added custom formats:
+-'uuid-composite' i.e) 'uuid1|uuid'
+-'integer'
+-'uuid-or-int'
 
 ### Int/Float
 #### min
